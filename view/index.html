@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>TODO APP</title>
+  <link rel="stylesheet" href="/index.css" type="text/css" >
 </head>
 <body>
 <h1>TODO APP</h1>
@@ -16,7 +17,7 @@
 </form>
 <ol>
   <% tasks.forEach(task => { %>
-  <li><input type="checkbox"> <%= task %></li>
+  <li><input type="checkbox"> <%= task.description %></li>
   <% }); %>
 </ol>
 </body>

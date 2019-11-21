@@ -3,20 +3,23 @@ const render = require('koa-ejs');
 const path = require('path');
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
-const TasksManager = require('./TasksManager');
+const tasksManager = require('./tasksManager');
 
 const app = new Koa();
 const router = new Router();
-const tasksManager = new TasksManager();
+
+app.use(require('koa-static')('public'));
 
 router.post('/', async ctx => {
-  tasksManager.addTask(ctx.request.body.task);
+  await tasksManager.addTask(ctx.request.body.task);
   ctx.redirect('/');
 });
-router.get('/', async ctx => {
-  const tasks = tasksManager.getAllTasks();
-  await ctx.render('index', { tasks });
-});
+router
+  .get('/', async ctx => {
+    const tasks = await tasksManager.getAllTasks();
+    await ctx.render('index', { tasks });
+  })
+;
 
 render(app, {
   root: path.join(__dirname, 'view'),
