@@ -1,24 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>TODO APP</title>
-  <link rel="stylesheet" href="/index.css" type="text/css" >
-</head>
-<body>
-<h1>TODO APP</h1>
-
-<form method="post">
-  <label>
-    Task:
-    <input type="text" placeholder="write your task here" required name="task">
-  </label>
-  <input type="submit" value="Add">
+<form method="post" action="/add-list">
+  <input name="name" required placeholder="list name">
+  <input type="submit" value="add new list">
 </form>
-<ol>
-  <% tasks.forEach(task => { %>
-  <li><input type="checkbox"> <%= task.description %></li>
-  <% }); %>
-</ol>
-</body>
-</html>

@@ -1,12 +1,4 @@
-const knex = require('knex')({
-  client: 'mysql',
-  connection: {
-    host: '127.0.0.1',
-    user: 'root',
-    password: '',
-    database: 'a19',
-  }
-});
+const knex = require('./knex');
 const TABLE_NAME = 'tasks';
 
 module.exports = {
@@ -15,5 +7,10 @@ module.exports = {
   },
   async getAllTasks() {
     return knex(TABLE_NAME).select();
+  },
+  async deleteOne(taskId) {
+    return knex(TABLE_NAME)
+      .where('taskId', taskId)
+      .del().delete(taskId);
   },
 };

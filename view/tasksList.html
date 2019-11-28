@@ -1,0 +1,35 @@
+<h1><%= list.name %></h1>
+
+<form method="post">
+  <label>
+    Task:
+    <input type="text" placeholder="write your task here" required name="task">
+  </label>
+  <input type="submit" value="Add">
+</form>
+<ol>
+  <% tasks.forEach(task => { %>
+  <li>
+    <input type="checkbox"> <%= task.description %>
+    <form action="delete-task" method="post" style="display: inline-block">
+      <input value="<%= task.taskId %>" name="taskId" type="hidden">
+      <input type="submit" value="x">
+    </form>
+    <span style="font-size: 10px; color: grey; margin-left: 10px">
+<%
+      const createdAt = new Date(task.createdAt);
+      const now = new Date();
+      let formatPattern = 'hh:mm';
+      if(
+      createdAt.getFullYear() !== now.getFullYear() ||
+      createdAt.getMonth() !== now.getMonth() ||
+      createdAt.getDate() !== now.getDate()
+      ){
+       formatPattern += ' MM-DD-YYYY';
+      }
+      %>
+      <%= moment(task.createdAt).format(formatPattern) %>
+    </span>
+  </li>
+  <% }); %>
+</ol>
