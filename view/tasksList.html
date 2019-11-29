@@ -11,8 +11,9 @@
   <% tasks.forEach(task => { %>
   <li>
     <input type="checkbox"> <%= task.description %>
-    <form action="delete-task" method="post" style="display: inline-block">
-      <input value="<%= task.taskId %>" name="taskId" type="hidden">
+    <form action="/delete-task" method="post" style="display: inline-block">
+      <input value="<%= task.taskId  %>" name="taskId" type="hidden">
+      <input value="<%= list.listId  %>" name="listId" type="hidden">
       <input type="submit" value="x">
     </form>
     <span style="font-size: 10px; color: grey; margin-left: 10px">

@@ -4,7 +4,7 @@ module.exports = knex({
   client: 'mysql',
   connection: {
     host: '127.0.0.1',
-    user: 'root',
+    user: 'monty',
     password: '',
     database: 'a19',
   }
