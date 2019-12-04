@@ -10,16 +10,5 @@ module.exports = {
     const [list] = await knex(TABLE_NAME).where('listId', listId).select();
     return list;
   },
-  async takeAll() {
-    const list = await knex(TABLE_NAME).select();
-    //console.log(list);
-    return list;
-  },
-  async deleteList(listId) {
-    console.log('del');
-    await knex('tasks').select().where('listId',listId).delete();
-    return knex(TABLE_NAME)
-        .where('listId',listId)
-        .delete();
-  }
+
 };

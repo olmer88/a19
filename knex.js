@@ -6,6 +6,6 @@ module.exports = knex({
     host: '127.0.0.1',
     user: 'monty',
     password: '',
-    database: 'a19',
+    database: 'a19(2)',
   }
 });

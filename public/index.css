@@ -1,3 +1,30 @@
 h1 {
     color: blue;
+    display: flex;
+
+    justify-content: center;
+}
+ol {
+    display: flex;
+    flex-direction: column;
+
+}
+form {
+    display: flex;
+    flex-flow: wrap;
+}
+li {
+
+}
+input {
+    align-self: center;
+}
+
+span {
+    align-self: center;
+}
+.wrap {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
 }
