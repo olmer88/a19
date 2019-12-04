@@ -4,43 +4,32 @@
   <label>
     Task:
     <input type="text" placeholder="write your task here" required name="task">
+    <input type="hidden" name="listId" value="<%= list.listId %>">
   </label>
   <input type="submit" value="Add">
 </form>
 <ol style="display: flex;flex-direction: column">
   <% tasks.forEach(task => { %>
   <li style="display: flex;">
-<!--    <form action="/checked" method="post" style="display: flex"> -->
-          <% if(task.done) {%>
-        <form action="/checked" method="post" style="display: flex">
-          <input type="checkbox"  checked > <p class="check" style="text-decoration: brown line-through;"> <%= task.description %> </p>
-            <input name="checked" value="false" type="hidden">
-            <input value="<%= task.taskId  %>" name="taskId" type="hidden">
-            <input value="<%= list.listId  %>" name="listId" type="hidden">
-            <input type="submit" value="check">
-        </form>
-          <% } else {%>
-      <form action="/checked" method="post" style="display: flex">
-          <input type="checkbox"  > <p class="unCheck"> <%= task.description %> </p>
-          <input name="checked" value="true" type="hidden">
-          <input value="<%= task.taskId  %>" name="taskId" type="hidden">
-            <input value="<%= list.listId  %>" name="listId" type="hidden">
-            <input type="submit" value="check">
-        </form>
-
-        <form action="/moveUp" method="post">
-            <input type="hidden" name="targetId" value="<%= task.taskId %>">
-            <input type="hidden" name="listId" value="<%= list.listId %>">
-            <input type="submit" value="up">
-        </form>
-
-        <% } %>
-   <!--     <input type="submit" value="check">
-
-    </form> -->
+    <form action="/check-task" method="post" style="display: flex">
+      <input type="checkbox" <%= task.doneAt ? 'checked' : '' %> >
+      <span class="check" style="<%= task.doneAt ? 'text-decoration: brown line-through' : '' %>">
+        <%=task.description %>
+      </span>
+      <input name="checked" value="<%= task.doneAt ? 'false' : 'true' %>" type="hidden">
+      <input value="<%= task.taskId  %>" name="taskId" type="hidden">
+      <input type="submit" value="<%= task.doneAt ? 'uncheck' : 'check' %>">
+    </form>
+    <% if(!task.doneAt) {%>
+    <form action="/moveUp" method="post">
+      <input type="hidden" name="targetId" value="<%= task.taskId %>">
+      <input type="hidden" name="listId" value="<%= list.listId %>">
+      <input type="submit" value="up">
+    </form>
+    <% }%>
     <form action="/delete-task" method="post" style="display: flex">
       <input value="<%= task.taskId  %>" name="taskId" type="hidden">
-       <input value="<%= list.listId  %>" name="listId" type="hidden">
+      <input value="<%= list.listId  %>" name="listId" type="hidden">
       <input type="submit" value="x">
     </form>
     <span style="font-size: 10px; color: red; margin-left: 10px">
