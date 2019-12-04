@@ -1,4 +1,19 @@
+<h1>Main</h1>
+<div class="wrap">
+<ol>
+  <% lists.forEach(list => { %>
+  <li style="list-style: none">
+    <a href="tasks-list?listId=<%= list.listId %>"> <%= list.name %></a>
+    <form action="/delete-list" method="post" style="display: inline-block">
+      <input value="<%= list.listId  %>" name="listId" type="hidden">
+      <input type="submit" value="x">
+    </form>
+  </li>
+  <% }); %>
+</ol>
 <form method="post" action="/add-list">
   <input name="name" required placeholder="list name">
   <input type="submit" value="add new list">
 </form>
+</div>
+<link rel="stylesheet" href="/public/index.css">

@@ -10,4 +10,5 @@ module.exports = {
     const [list] = await knex(TABLE_NAME).where('listId', listId).select();
     return list;
   },
+
 };
