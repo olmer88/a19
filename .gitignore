@@ -61,3 +61,4 @@ eer/db.mwb.bak
 # next.js build output
 .next
 .idea
+config/local.js
