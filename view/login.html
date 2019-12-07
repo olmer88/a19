@@ -1,0 +1,19 @@
+<h1>Login</h1>
+<ul>
+    <% users.forEach(user => { %>
+    <li><%= user.userName %> <%= user.password %></li>
+    <% }); %>
+</ul>
+<form action="/login" method="post">
+    <label for="userName">Enter to TODO
+    <input type="text" id="userName" name="userName" placeholder="user Name" required>
+    <input type="password" name="password" placeholder="password" required>
+    <input type="submit" value="login">
+    </label>
+</form>
+<form action="/signIn" method="post">
+    <label for="userName">registration in TODO</label>
+    <input type="text" id="userName" name="userName" placeholder="user Name" required>
+    <input type="password" name="password" placeholder="password" required>
+    <input type="submit" value="signIn">
+</form>

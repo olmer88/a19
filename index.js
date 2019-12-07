@@ -5,12 +5,23 @@ const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
 const indexController = require('./controllers/indexController');
 
+const session = require('koa-session');
+
 const app = new Koa();
 const router = new Router();
+
+
+app.keys = ['some secret hurr'];
+app.use(session(app));
 
 app.use(require('koa-static')('public'));
 
 router
+  .get('/login', indexController.showAllUsers)
+    .post('/signIn', indexController.addUser)
+    .post('/login', indexController.login)
+    .post('/logOut', indexController.logOut)
+
   .get('/', indexController.showAllLists)
   .post('/tasks-list', indexController.addTask)
   .get('/tasks-list', indexController.showListTasks)

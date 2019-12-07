@@ -1,19 +1,51 @@
 const moment = require('moment');
 const tasksManager = require('../managers/tasksManager');
 const listsManager = require('../managers/listsManager');
+
+const usersManager = require('../managers/usersManager');
+
 const { makeListTasksUrl } = require('../managers/urlBuilder');
 
 module.exports = {
+  async addUser(ctx) {
+    const {userName, password} = ctx.request.body;
+    await usersManager.addUser(userName, password);
+    ctx.redirect('/login');
+  },
+  async showAllUsers(ctx) {
+    const users = await usersManager.getAllUsers();
+    await ctx.render('login', {users});
+  },
+  async login(ctx) {
+    const {userName, password} = ctx.request.body;
+    const [user] = await usersManager.loginIn(userName, password);
+    if(user){
+      ctx.session.userId = user.userId;
+      ctx.redirect('/');
+      return;
+    }
+    ctx.redirect('/login');
+  },
+  async logOut(ctx) {
+    ctx.session = null;
+    ctx.redirect('/login');
+  },
   async addTask(ctx) {
     await tasksManager.addTask(ctx.request.body.task, ctx.request.query.listId);
     ctx.redirect(makeListTasksUrl(ctx.request.query.listId));
   },
   async addList(ctx) {
-    const listId = await listsManager.addList(ctx.request.body.name);
+    const {userId} = ctx.session;
+    const listId = await listsManager.addList(ctx.request.body.name, userId);
     ctx.redirect(makeListTasksUrl(listId));
   },
   async showAllLists(ctx) {
-    const lists = await listsManager.getAllLists();
+    const {userId} = ctx.session;
+    if(!userId){
+      ctx.redirect('/login');
+      return ;
+    }
+    const lists = await listsManager.getAllLists(userId);
     await ctx.render('index', { lists });
   },
   async deleteTask(ctx) {
