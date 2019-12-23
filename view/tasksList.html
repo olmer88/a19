@@ -12,14 +12,13 @@
   <% tasks.forEach(task => { %>
   <li style="display: flex;">
     <form action="/check-task" method="post" style="display: flex">
-      <input type="checkbox" <%= task.doneAt ? 'checked' : '' %> >
-      <span class="check" style="<%= task.doneAt ? 'text-decoration: brown line-through' : '' %>">
-        <%=task.description %>
-      </span>
-      <input name="checked" value="<%= task.doneAt ? 'false' : 'true' %>" type="hidden">
       <input value="<%= task.taskId  %>" name="taskId" type="hidden">
-      <input type="submit" value="<%= task.doneAt ? 'uncheck' : 'check' %>">
+      <input name="checked" value="true" type="checkbox" <%= task.doneAt ? 'checked' : '' %>
+      onChange="this.form.submit()" >
     </form>
+    <span class="check" style="<%= task.doneAt ? 'text-decoration: brown line-through' : '' %>">
+      <%=task.description %>
+    </span>
     <% if(!task.doneAt) {%>
     <form action="/moveUp" method="post">
       <input type="hidden" name="targetId" value="<%= task.taskId %>">
