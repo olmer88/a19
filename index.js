@@ -2,9 +2,11 @@ const Koa = require('koa');
 const render = require('koa-ejs');
 const path = require('path');
 const bodyParser = require('koa-bodyparser');
+const session = require('koa-session');
 const routes = require('./routes');
 
 const app = new Koa();
+app.use(session({ signed: false }, app));
 
 app.use(require('koa-static')('public'));
 

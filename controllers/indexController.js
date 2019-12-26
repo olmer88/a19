@@ -13,8 +13,11 @@ module.exports = {
     ctx.redirect(makeListTasksUrl(listId));
   },
   async showAllLists(ctx) {
+    let { views = 0 } = ctx.session;
+    views += 1;
+    ctx.session = { views };
     const lists = await listsManager.getAllLists();
-    await ctx.render('index', { lists });
+    await ctx.render('index', { lists, views });
   },
   async deleteTask(ctx) {
     await tasksManager.deleteOne(ctx.request.body.taskId);
