@@ -6,6 +6,7 @@ const checkDone = (taskId, isDone) => knex(TABLE_NAME)
   .update({ doneAt: isDone ? new Date() : null });
 
 module.exports = {
+
   async findOneById(taskId) {
     const [task] = await knex(TABLE_NAME).select().where('taskId', taskId);
     return task;

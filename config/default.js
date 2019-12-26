@@ -1,3 +1,3 @@
 module.exports = {
-  db: { user: 'root', password: '' }
+  db: { user: 'root', password: '' },
 };

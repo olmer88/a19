@@ -14,6 +14,19 @@
 <%- body %>
 
 
-<footer style="margin-top: 100px">@copyright 2019</footer>
+<footer style="margin-top: 100px; display: flex; justify-content: space-between">@copyright 2019
+<span id="weather"></span>
+</footer>
 </body>
+<script>
+  async function GetWeatherByFetch() {
+    const API = 'ce65a544a042c7fb0d28587ccb3c5cb8';
+    const city = 'Vinnytsya';
+    const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API}`;
+    const {main, name} = await fetch(url).then(data=>data.json());
+    let span = document.getElementById('weather');
+    span.innerHTML = name.toString() + ' ' + (main.temp-273.15).toString()+' degrees';
+  }
+  GetWeatherByFetch();
+</script>
 </html>
