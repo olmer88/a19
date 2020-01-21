@@ -1,9 +1,25 @@
 const moment = require('moment');
 const tasksManager = require('../managers/tasksManager');
 const listsManager = require('../managers/listsManager');
+const usersManager = require('../managers/usersManager');
 const { makeListTasksUrl } = require('../managers/urlBuilder');
 
 module.exports = {
+  async register(ctx) {
+    const { name, password } = ctx.request.body;
+    // todo перевірити чи немає в базі вже такого юзера ?
+    // todo якщо є, то вивести повідомлення ?
+    ctx.session.userId = await usersManager.addUser(name, password);
+    ctx.session.name = name;
+    ctx.redirect('/');
+  },
+  async login(ctx) {
+    const { name, password } = ctx.request.body;
+    const { userId } = await usersManager.findOne(name, password);
+    ctx.session.userId = userId;
+    ctx.session.name = name;
+    ctx.redirect('/');
+  },
   async addTask(ctx) {
     await tasksManager.addTask(ctx.request.body.task, ctx.request.query.listId);
     ctx.redirect(makeListTasksUrl(ctx.request.query.listId));
@@ -13,11 +29,8 @@ module.exports = {
     ctx.redirect(makeListTasksUrl(listId));
   },
   async showAllLists(ctx) {
-    let { views = 0 } = ctx.session;
-    views += 1;
-    ctx.session = { views };
     const lists = await listsManager.getAllLists();
-    await ctx.render('index', { lists, views });
+    await ctx.render('index', { lists });
   },
   async deleteTask(ctx) {
     await tasksManager.deleteOne(ctx.request.body.taskId);

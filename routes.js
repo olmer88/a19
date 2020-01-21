@@ -5,6 +5,8 @@ const router = new Router();
 
 router
   .get('/', indexController.showAllLists)
+  .post('/register', indexController.register)
+  .post('/login', indexController.login)
   .post('/tasks-list', indexController.addTask)
   .get('/tasks-list', indexController.showListTasks)
   .post('/add-list', indexController.addList)

@@ -19,6 +19,10 @@ render(app, {
 
 app
   .use(bodyParser())
+  .use(async (ctx, next) => {
+    ctx.state.name = ctx.session.name || '';
+    await next();
+  })
   .use(routes)
 ;
 

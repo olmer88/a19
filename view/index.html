@@ -1,18 +1,45 @@
-<h1>Main <%= views %></h1>
-<div class="wrap">
-<ol>
-  <% lists.forEach(list => { %>
-  <li style="list-style: none">
-    <a href="tasks-list?listId=<%= list.listId %>"> <%= list.name %></a>
-    <form action="/delete-list" method="post" style="display: inline-block">
-      <input value="<%= list.listId  %>" name="listId" type="hidden">
-      <input type="submit" value="x">
-    </form>
-  </li>
-  <% }); %>
-</ol>
-<form method="post" action="/add-list">
-  <input name="name" required placeholder="list name">
-  <input type="submit" value="add new list">
+<h1>Main</h1>
+
+<form method="post">
+  <fieldset>
+    <legend>Login or register</legend>
+    <table>
+      <tr>
+        <td><label for="name">Name:</label></td>
+        <td>
+          <input name="name" id="name" required></label><br>
+        </td>
+      </tr>
+      <tr>
+        <td><label for="password">Password:</label></td>
+        <td><input name="password" id="password" required></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <input type="submit" value="Register" formaction="/register"
+                 style="background-color: green; margin-right: 20px"
+          >
+          <input type="submit" value="Login" formaction="/login" style="background-color: blue">
+        </td>
+      </tr>
+    </table>
+  </fieldset>
 </form>
+<div class="wrap">
+  <ol>
+    <% lists.forEach(list => { %>
+    <li style="list-style: none">
+      <a href="tasks-list?listId=<%= list.listId %>"> <%= list.name %></a>
+      <form action="/delete-list" method="post" style="display: inline-block">
+        <input value="<%= list.listId  %>" name="listId" type="hidden">
+        <input type="submit" value="x">
+      </form>
+    </li>
+    <% }); %>
+  </ol>
+  <form method="post" action="/add-list">
+    <input name="name" required placeholder="list name">
+    <input type="submit" value="add new list">
+  </form>
 </div>
