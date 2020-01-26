@@ -1,6 +1,7 @@
 const moment = require('moment');
 const tasksManager = require('../managers/tasksManager');
 const listsManager = require('../managers/listsManager');
+const userManager = require('../managers/usersManager');
 
 
 const usersManager = require('../managers/usersManager');
@@ -8,9 +9,20 @@ const usersManager = require('../managers/usersManager');
 const { makeListTasksUrl } = require('../managers/urlBuilder');
 
 module.exports = {
-  async addUser(ctx) {
+  async checkUserName(ctx) {
+    const {name} = ctx.request.query;
+    const user = await userManager.findOne(name);
+    ctx.response.body = {
+      user: !user.length
+    };
+  },
+  async addUser(ctx, next) {
     const {userName, password} = ctx.request.body;
-    await usersManager.addUser(userName, password);
+    try {
+      await usersManager.addUser(userName, password);
+    } catch (e) {
+      console.log(e);
+    }
     ctx.redirect('/login');
   },
   async showAllUsers(ctx) {
@@ -29,8 +41,9 @@ module.exports = {
     ctx.redirect('/login');
   },
   async logOut(ctx) {
-    ctx.session.userId = undefined;
-    ctx.session.userName = undefined;
+/*    ctx.session.userId = undefined;
+    ctx.session.userName = undefined;*/
+    ctx.session = null;
     ctx.redirect('/login');
   },
   async addTask(ctx) {

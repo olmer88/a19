@@ -3,6 +3,7 @@ const render = require('koa-ejs');
 const path = require('path');
 const bodyParser = require('koa-bodyparser');
 const routes = require('./routes');
+const errorHandler = require('./controllers/errorController');
 
 const session = require('koa-session');
 const app = new Koa();

@@ -8,6 +8,9 @@ const md5 = (password) => crypto
     .digest('base64');
 
 module.exports = {
+  async findOne(userName){
+      return knex(TABLE_NAME).select().where({ userName });
+  },
 
   async getAllUsers(){
       return knex(TABLE_NAME).select();
