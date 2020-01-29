@@ -1,11 +1,7 @@
 const knex = require('../knex');
-const crypto = require('crypto');
+const { md5 } = require('./../utils/md5');
 const TABLE_NAME = 'users';
 
-const md5 = (password) => crypto
-    .createHash('md5')
-    .update(password)
-    .digest('base64');
 
 module.exports = {
   async findOne(userName){

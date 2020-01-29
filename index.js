@@ -5,9 +5,10 @@ const bodyParser = require('koa-bodyparser');
 const routes = require('./routes');
 const errorHandler = require('./controllers/errorController');
 
+const testRouter = require('./js');
+
 const session = require('koa-session');
 const app = new Koa();
-
 
 app.keys = ['some secret hurr'];
 app.use(session(app));
@@ -27,6 +28,8 @@ app
       ctx.state.userName = ctx.session.userName || '';
       await next();
     })
+    .use(testRouter.routes())
+    .use(testRouter.allowedMethods())
     .use(routes);
 
 app.listen(8080);

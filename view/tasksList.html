@@ -32,7 +32,7 @@
                         </form>
                     </div>
                 </div>
-                <input type="text" class="form-control" aria-label="Text input with checkbox" value="<%=task.description %>">
+                <input type="text" class="form-control" aria-label="Text input with checkbox" value="<%=task.description %>" style="<%= task.doneAt? 'text-decoration: line-through red' : ''  %>  ">
                 <% if(!task.doneAt) {%>
                 <form action="/moveUp" method="post">
                     <input type="hidden" name="targetId" value="<%= task.taskId %>">

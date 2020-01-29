@@ -2,6 +2,8 @@ const moment = require('moment');
 const tasksManager = require('../managers/tasksManager');
 const listsManager = require('../managers/listsManager');
 const userManager = require('../managers/usersManager');
+const {makePrivateKeyKey, isValidMessage, publicKey} = require('./../utils/privatKey');
+const qs = require('qs');
 
 
 const usersManager = require('../managers/usersManager');
@@ -11,24 +13,38 @@ const { makeListTasksUrl } = require('../managers/urlBuilder');
 module.exports = {
   async checkUserName(ctx) {
     const {name} = ctx.request.query;
-    const user = await userManager.findOne(name);
-    ctx.response.body = {
-      user: !user.length
-    };
+    const [user] = await userManager.findOne(name);
+    if(user) {
+      ctx.response.body = {
+        user: true,
+      }
+    }else{
+      ctx.response.body = {
+        user: true,
+      }
+    }
   },
   async addUser(ctx, next) {
     const {userName, password} = ctx.request.body;
     try {
       await usersManager.addUser(userName, password);
     } catch (e) {
-      console.log(e);
+      const queryString = `/login?${qs.stringify({message:'duplicate name'})}`;
+      //console.log(qs.parse(queryString));
+      return ctx.redirect(queryString)
     }
     ctx.redirect('/login');
   },
+
   async showAllUsers(ctx) {
+    const { message } = ctx.request.query;
+
+    ctx.state.msg = isValidMessage(message) ? 'name already exist' : '';
+
     const users = await usersManager.getAllUsers();
     await ctx.render('login', {users});
   },
+
   async login(ctx) {
     const {userName, password} = ctx.request.body;
     const [user] = await usersManager.loginIn(userName, password);

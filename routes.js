@@ -1,7 +1,6 @@
 const Router = require('koa-router');
 const indexController = require('./controllers/indexController');
-
-const userManager = require('./managers/usersManager');
+const test = require('./js');
 
 const router = new Router();
 

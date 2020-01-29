@@ -51,3 +51,7 @@ flex-basis: min-content;
     width: 100%;
     flex-wrap: wrap;
 }
+
+b {
+    transition: .5s;
+}
