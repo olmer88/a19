@@ -1,20 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>TODO APP</title>
-  <link rel="stylesheet" href="/index.css" type="text/css">
+    <meta charset="UTF-8">
+    <title>TODO APP</title>
+    <link rel="stylesheet" href="/index.css" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
 </head>
 <body>
 <header>
-  <a href="/" style="list-style: none">Main page</a>
-  <%= name %>
+    <div class="container" style="display: flex; justify-content: space-between; background-color: black;padding: 10px">
+        <% if(userName) {%>
+        <a href="/lists" style="list-style: none">
+            <button type="submit" class="btn btn-outline-primary">Main page</button>
+        </a>
+        <span style="color: white"><%= userName %><span style="color: green">:online</span></span>
+        <form action="/logOut" method="post">
+            <button type="submit" class="btn btn-outline-danger">log-Out</button>
+        </form>
+        <% } %>
+    </div>
 </header>
 
 
 <%- body %>
 
 
-<footer style="margin-top: 100px">@copyright 2019</footer>
+<div class="container p-0">
+    <footer style="display: flex; justify-content: space-between; background-color: black; padding: 10px">
+        <span style="color: white">@copyright</span>
+        <span id="weather" style="color: white"></span>
+    </footer>
+</div>
 </body>
+<script>
+    async function GetWeatherByFetch() {
+        const API = 'ce65a544a042c7fb0d28587ccb3c5cb8';
+        const city = 'Vinnytsya';
+        const url = `http://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API}`;
+        const {main, name} = await fetch(url).then(data => data.json());
+        let span = document.getElementById('weather');
+        span.innerHTML = name.toString() + ' ' + (main.temp - 273.15).toFixed(1) + ' degrees';
+    }
+
+    GetWeatherByFetch();
+</script>
 </html>

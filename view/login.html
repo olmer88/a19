@@ -1,0 +1,57 @@
+<h1>ToDo</h1>
+<span>
+
+</span>
+
+<div class="container wrap">
+    <div class="row container-reg" style="position:relative;">
+        <div class="col-12 col-md-4 ">
+            <form method="post" class="regist" id="login"
+                  style=" display: flex; flex-direction: column; justify-content: center" >
+                <legend>Login or register</legend><span style="position: absolute; z-index: 5; top: 41%"> <%= msg %> </span>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="userName" name="userName" aria-describedby="emailHelp"
+                           placeholder="Enter your name" required <!--oninput="checkName(this.value)-->">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" id="exampleInputPassword1" name="password"
+                           placeholder="password" required>
+                </div>
+                <div style="display:flex; justify-content: space-between">
+                    <button type="submit" formaction="/login" class="btn btn-primary">Enter</button>
+                    <button type="submit" formaction="/signIn" class="btn btn-success" id="btnReg">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<ul>
+    <% users.forEach(user => { %>
+    <li>
+        <%= user.userName %> <%= user.password %>
+        <a href="/delete-user?userId=<%= user.userId %>">x</a>
+        <!-- <form method="post" action="/delete-user" style="display: inline-block">
+             <input type="hidden" value="<%= user.userId %>" name="userId">
+             <input type="submit" value="x">
+         </form>-->
+    </li>
+    <% }); %>
+</ul>
+
+<script>
+    const checkName = async (val) => {
+        const btnRegister = document.querySelector('#btnReg');
+        if(val.length === 0){
+            btnRegister.setAttribute('disabled', 'disabled');
+            return;
+        }
+        const response = await fetch(`/user?name=${val}`);
+        const data = await response.json();
+        if(data.user){
+            btnRegister.removeAttribute('disabled');
+        }else {
+            btnRegister.setAttribute('disabled', 'disabled');
+        }
+    };
+    12
+</script>

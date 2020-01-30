@@ -4,6 +4,6 @@ module.exports = {
    * @return {string}
    */
   makeListTasksUrl(listId) {
-    return `/tasks-list?listId=${listId}`;
+    return `/tasks/tasks-list?listId=${listId}`;
   },
 };

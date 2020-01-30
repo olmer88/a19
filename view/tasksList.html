@@ -1,37 +1,52 @@
 <h1><%= list.name %></h1>
 <div class="wrap">
-<form method="post">
-  <label>
-    Task:
-    <input type="text" placeholder="write your task here" required name="task">
-    <input type="hidden" name="listId" value="<%= list.listId %>">
-  </label>
-  <input type="submit" value="Add">
-</form>
-<ol style="display: flex;flex-direction: column">
-  <% tasks.forEach(task => { %>
-  <li style="display: flex;">
-    <form action="/check-task" method="post" style="display: flex">
-      <input value="<%= task.taskId  %>" name="taskId" type="hidden">
-      <input name="checked" value="true" type="checkbox" <%= task.doneAt ? 'checked' : '' %>
-      onChange="this.form.submit()" >
+    <form method="post" >
+        <div class="input-group mb-3">
+            <input type="text"
+                   class="form-control"
+                   placeholder="write your task here"
+                   aria-label="Recipient's username"
+                   name="task" required
+                   aria-describedby="button-addon2">
+            <input type="hidden"
+                   name="listId"
+                   value="<%= list.listId %>">
+            <div class="input-group-append">
+                <button class="btn btn-outline-primary"
+                        type="submit"
+                        id="button-addon2">ADD
+                </button>
+            </div>
+        </div>
     </form>
-    <span class="check" style="<%= task.doneAt ? 'text-decoration: brown line-through' : '' %>">
-      <%=task.description %>
-    </span>
-    <% if(!task.doneAt) {%>
-    <form action="/moveUp" method="post">
-      <input type="hidden" name="targetId" value="<%= task.taskId %>">
-      <input type="hidden" name="listId" value="<%= list.listId %>">
-      <input type="submit" value="up">
-    </form>
-    <% }%>
-    <form action="/delete-task" method="post" style="display: flex">
-      <input value="<%= task.taskId  %>" name="taskId" type="hidden">
-      <input value="<%= list.listId  %>" name="listId" type="hidden">
-      <input type="submit" value="x">
-    </form>
-    <span style="font-size: 10px; color: red; margin-left: 10px">
+    <ol style="display: flex;flex-direction: column">
+        <% tasks.forEach(task => { %>
+        <li style="display: flex;">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <form action="/tasks/check-task" method="post" style="display: flex">
+                            <input value="<%= task.taskId  %>" name="taskId" type="hidden">
+                            <input name="checked" value="true" aria-label="Checkbox for following text input" type="checkbox" <%= task.doneAt ? 'checked' : '' %>
+                            onChange="this.form.submit()" >
+                        </form>
+                    </div>
+                </div>
+                <input type="text" class="form-control" aria-label="Text input with checkbox" value="<%=task.description %>" style="<%= task.doneAt? 'text-decoration: line-through red' : ''  %>  ">
+                <% if(!task.doneAt) {%>
+                <form action="/tasks/moveUp" method="post">
+                    <input type="hidden" name="targetId" value="<%= task.taskId %>">
+                    <input type="hidden" name="listId" value="<%= list.listId %>">
+                    <button type="submit" class="btn btn-primary">up</button>
+                </form>
+                <% }%>
+                <form action="/tasks/delete-task" method="post" style="display: flex">
+                    <input value="<%= task.taskId  %>" name="taskId" type="hidden">
+                    <input value="<%= list.listId  %>" name="listId" type="hidden">
+                    <button type="submit" class="btn btn-danger">x</button>
+                </form>
+            </div>
+            <span style="font-size: 10px; color: red; margin-left: 10px">
 <%
       const createdAt = new Date(task.createdAt);
       const now = new Date();
@@ -46,36 +61,13 @@
       %>
       <%= moment(task.createdAt).format(formatPattern) %>
     </span>
-      <% if(task.doneAt) { %>
-    <span style="font-size: 10px; color: green; margin-left: 10px">
+            <% if(task.doneAt) { %>
+            <span style="font-size: 10px; color: green; margin-left: 10px">
         <%= moment(task.doneAt).format(formatPattern) %>
     </span>
-      <% } %>
-  </li>
-  <% }); %>
-</ol>
+            <% } %>
+        </li>
+        <% }); %>
+    </ol>
 </div>
 
-<script>
-    /*
-     function checkBox(id,ctx,listId) {
-         return new Promise(((resolve, reject) => {
-             let xhr = new XMLHttpRequest();
-             xhr.open('POST','/checked',true);
-             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-             xhr.send(`taskId=${id}&checked=${ctx.checked}&listId=${listId}`);
-             resolve('ok');
-         })).then((res)=>console.log(res));
-
-         /*
-        let xhr = new XMLHttpRequest();
-        xhr.open('POST','/checked',true);
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.send(`taskId=${id}&checked=${ctx.checked}&listId=${listId}`);*/
-        //xhr.send(`taskId=${id}&checked=${ctx.checked}&listId=${listId}`);
-        //setTimeout(() => console.log(xhr.response),1000);
-
-   // }
-    //checkBox(id,ctx,listId).then(console.log);
-
-</script>
