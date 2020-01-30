@@ -2,10 +2,9 @@ const Koa = require('koa');
 const render = require('koa-ejs');
 const path = require('path');
 const bodyParser = require('koa-bodyparser');
-const routes = require('./routes');
-const errorHandler = require('./controllers/errorController');
-
-const testRouter = require('./js');
+const userRoutes = require('./routes/userRoutes');
+const listsRoutes = require('./routes/listsRoutes');
+const tasksRoutes = require('./routes/tasksRoutes');
 
 const session = require('koa-session');
 const app = new Koa();
@@ -28,8 +27,13 @@ app
       ctx.state.userName = ctx.session.userName || '';
       await next();
     })
-    .use(testRouter.routes())
-    .use(testRouter.allowedMethods())
-    .use(routes);
+    .use(userRoutes.routes())
+    .use(userRoutes.allowedMethods())
+    .use(listsRoutes.routes())
+    .use(listsRoutes.allowedMethods())
+    .use(tasksRoutes.routes())
+    .use(tasksRoutes.allowedMethods());
 
 app.listen(8080);
+
+

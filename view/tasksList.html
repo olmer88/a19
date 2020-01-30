@@ -25,7 +25,7 @@
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <div class="input-group-text">
-                        <form action="/check-task" method="post" style="display: flex">
+                        <form action="/tasks/check-task" method="post" style="display: flex">
                             <input value="<%= task.taskId  %>" name="taskId" type="hidden">
                             <input name="checked" value="true" aria-label="Checkbox for following text input" type="checkbox" <%= task.doneAt ? 'checked' : '' %>
                             onChange="this.form.submit()" >
@@ -34,13 +34,13 @@
                 </div>
                 <input type="text" class="form-control" aria-label="Text input with checkbox" value="<%=task.description %>" style="<%= task.doneAt? 'text-decoration: line-through red' : ''  %>  ">
                 <% if(!task.doneAt) {%>
-                <form action="/moveUp" method="post">
+                <form action="/tasks/moveUp" method="post">
                     <input type="hidden" name="targetId" value="<%= task.taskId %>">
                     <input type="hidden" name="listId" value="<%= list.listId %>">
                     <button type="submit" class="btn btn-primary">up</button>
                 </form>
                 <% }%>
-                <form action="/delete-task" method="post" style="display: flex">
+                <form action="/tasks/delete-task" method="post" style="display: flex">
                     <input value="<%= task.taskId  %>" name="taskId" type="hidden">
                     <input value="<%= list.listId  %>" name="listId" type="hidden">
                     <button type="submit" class="btn btn-danger">x</button>

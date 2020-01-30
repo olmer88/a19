@@ -8,9 +8,9 @@
                         <% lists.forEach(list => { %>
                         <li style="list-style: none; font-size: 1.5rem"
                             class="list-group-item d-flex justify-content-between align-items-center">
-                            <a href="tasks-list?listId=<%= list.listId %>"> <%= list.name %></a>
+                            <a href="/tasks/tasks-list?listId=<%= list.listId %>"> <%= list.name %></a>
                             <span class="badge badge-success badge-pill"><%= list.unDone %></span>
-                            <form action="/delete-list" method="post" style="display: inline-block">
+                            <form action="/lists/delete-list" method="post" style="display: inline-block">
                                 <input value="<%= list.listId  %>" name="listId" type="hidden">
                                 <button type="submit" class="btn btn-danger">x</button>
                             </form>
@@ -22,7 +22,7 @@
 
             <div class="col-12 col-sm-6"
                  style="display: flex;flex-wrap: wrap;flex-direction: row; align-content: start; justify-content: flex-end;">
-                <form method="post" action="/add-list">
+                <form method="post" action="lists/add-list">
                     <input name="name" required placeholder="list name">
                     <input type="submit" class="btn btn-primary" value="add new list" style="margin-left: 5px ">
                 </form>
