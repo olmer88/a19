@@ -3,15 +3,22 @@ const tasksManager = require('../managers/tasksManager');
 const listsManager = require('../managers/listsManager');
 const usersManager = require('../managers/usersManager');
 const { makeListTasksUrl } = require('../managers/urlBuilder');
+const securityManager = require('../managers/securityManager');
+const qs = require('qs');
 
 module.exports = {
   async register(ctx) {
     const { name, password } = ctx.request.body;
-    // todo перевірити чи немає в базі вже такого юзера ?
-    // todo якщо є, то вивести повідомлення ?
-    ctx.session.userId = await usersManager.addUser(name, password);
+    let msg = '';
+    try {
+      ctx.session.userId = await usersManager.addUser(name, password);
+    } catch (e) {
+      console.log(e);
+      msg = 'Duplicate name';
+    }
     ctx.session.name = name;
-    ctx.redirect('/');
+    const queryString = qs.stringify({ msg, publicKey: securityManager.makePublicKey(msg) });
+    ctx.redirect(`/?${queryString}`);
   },
   async login(ctx) {
     const { name, password } = ctx.request.body;
@@ -29,6 +36,8 @@ module.exports = {
     ctx.redirect(makeListTasksUrl(listId));
   },
   async showAllLists(ctx) {
+    const { msg, publicKey } = ctx.query;
+    ctx.state.msg = securityManager.isMessageValid(msg, publicKey) ? msg : '';
     const lists = await listsManager.getAllLists();
     await ctx.render('index', { lists });
   },

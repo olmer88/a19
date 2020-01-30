@@ -1,10 +1,5 @@
-const crypto = require('crypto');
 const knex = require('../knex');
-
-const md5 = (password) => crypto
-  .createHash('md5')
-  .update(password)
-  .digest('base64');
+const { md5 } = require('./securityManager');
 
 const TABLE_NAME = 'users';
 module.exports = {
