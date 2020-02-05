@@ -1,12 +1,15 @@
 const Router = require('koa-router');
 const indexController = require('./controllers/indexController');
+const userController = require('./controllers/userController');
 
 const router = new Router();
 
 router
   .get('/', indexController.showAllLists)
-  .post('/register', indexController.register)
-  .post('/login', indexController.login)
+  .post('/register', userController.register)
+  .post('/login', userController.login)
+  .get('/login', userController.loginPage)
+  .get('/logout', userController.logout)
   .post('/tasks-list', indexController.addTask)
   .get('/tasks-list', indexController.showListTasks)
   .post('/add-list', indexController.addList)

@@ -11,6 +11,10 @@ module.exports = {
     const [list] = await knex(TABLE_NAME).where('listId', listId).select();
     return list;
   },
+  /**
+   * @param listId
+   * @return {number}
+   */
   async deleteList(listId) {
     await tasksManager.deleteListTasks(listId);
     return knex(TABLE_NAME)

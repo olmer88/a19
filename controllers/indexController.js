@@ -1,32 +1,9 @@
 const moment = require('moment');
 const tasksManager = require('../managers/tasksManager');
 const listsManager = require('../managers/listsManager');
-const usersManager = require('../managers/usersManager');
 const { makeListTasksUrl } = require('../managers/urlBuilder');
-const securityManager = require('../managers/securityManager');
-const qs = require('qs');
 
 module.exports = {
-  async register(ctx) {
-    const { name, password } = ctx.request.body;
-    let msg = '';
-    try {
-      ctx.session.userId = await usersManager.addUser(name, password);
-    } catch (e) {
-      console.log(e);
-      msg = 'Duplicate name';
-    }
-    ctx.session.name = name;
-    const queryString = qs.stringify({ msg, publicKey: securityManager.makePublicKey(msg) });
-    ctx.redirect(`/?${queryString}`);
-  },
-  async login(ctx) {
-    const { name, password } = ctx.request.body;
-    const { userId } = await usersManager.findOne(name, password);
-    ctx.session.userId = userId;
-    ctx.session.name = name;
-    ctx.redirect('/');
-  },
   async addTask(ctx) {
     await tasksManager.addTask(ctx.request.body.task, ctx.request.query.listId);
     ctx.redirect(makeListTasksUrl(ctx.request.query.listId));
@@ -36,8 +13,10 @@ module.exports = {
     ctx.redirect(makeListTasksUrl(listId));
   },
   async showAllLists(ctx) {
-    const { msg, publicKey } = ctx.query;
-    ctx.state.msg = securityManager.isMessageValid(msg, publicKey) ? msg : '';
+    if (!ctx.session.userId) {
+      ctx.redirect('/login');
+      return;
+    }
     const lists = await listsManager.getAllLists();
     await ctx.render('index', { lists });
   },
@@ -50,7 +29,7 @@ module.exports = {
     ctx.redirect('/');
   },
   async checkTask(ctx) {
-    const taskId = ctx.request.body.taskId;
+    const { taskId } = ctx.request.body;
     if (ctx.request.body.checked === 'true') {
       await tasksManager.check(taskId);
     } else {
@@ -62,7 +41,7 @@ module.exports = {
   async moveUp(ctx) {
     const tasksArray = [];
     const tasks = await tasksManager.getAllTasksForList(ctx.request.body.listId);
-    tasks.forEach(v => !v.done ? tasksArray.push(v['taskId']) : v);
+    tasks.forEach((v) => (!v.done ? tasksArray.push(v.taskId) : v));
     if (tasksArray.indexOf(+ctx.request.body.targetId) === 0) {
       ctx.redirect(makeListTasksUrl(ctx.request.body.listId));
     } else {

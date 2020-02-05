@@ -8,9 +8,12 @@
 <body>
 <header>
   <a href="/" style="list-style: none">Main page</a>
-  <%= name %>
+  <%= sessionName %>
+  <% if(sessionName) { %>
+    <a href="/logout">Log out</a>
+  <% } %>
 </header>
-
+<p style="background-color: lightyellow"><%= msg %></p>
 
 <%- body %>
 

@@ -4,6 +4,7 @@ const path = require('path');
 const bodyParser = require('koa-bodyparser');
 const session = require('koa-session');
 const routes = require('./routes');
+const securityManager = require('./managers/securityManager');
 
 const app = new Koa();
 app.use(session({ signed: false }, app));
@@ -20,7 +21,9 @@ render(app, {
 app
   .use(bodyParser())
   .use(async (ctx, next) => {
-    ctx.state.name = ctx.session.name || '';
+    ctx.state.sessionName = ctx.session.name || '';
+    const { msg, publicKey } = ctx.query;
+    ctx.state.msg = securityManager.isMessageValid(msg, publicKey) ? msg : '';
     await next();
   })
   .use(routes)
