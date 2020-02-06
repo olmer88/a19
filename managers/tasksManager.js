@@ -6,6 +6,7 @@ const checkDone = (taskId, isDone) => knex(TABLE_NAME)
   .update({ doneAt: isDone ? new Date() : null });
 
 module.exports = {
+
   async findOneById(taskId) {
     const [task] = await knex(TABLE_NAME).select().where('taskId', taskId);
     return task;
@@ -36,5 +37,17 @@ module.exports = {
     return knex(TABLE_NAME)
       .where('taskId', targetToChange)
       .update({ createdAt: targetIdData.createdAt, description: targetIdData.description });
+  },
+  async getAllTasksForUser(userId){
+    return knex(TABLE_NAME)
+        .join('lists', `${TABLE_NAME}.listId`, 'lists.listId')
+        .where('lists.userId', userId);
+  },
+  async deleteAllDone(listId) {
+    return knex(TABLE_NAME)
+        .select('listId')
+        .whereNotNull('doneAt').and
+        .where({listId})
+        .del();
   }
 };

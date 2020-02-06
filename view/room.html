@@ -1,0 +1,35 @@
+<div class="container">
+<form action="/rooms/room/addTask" method="post">
+    <input type="text" name="description">
+    <input type="hidden" name="userId" value="<%= userId %>">
+    <input type="hidden" name="roomId" value="<%= roomId %>">
+    <button type="submit">add task</button>
+</form>
+
+<ul>
+    <% tasks.forEach(({description, taskCreatedBy, roomTaskId, createdByName, createdAt}) => { %>
+    <li>
+        <%= description %>
+        <% if( taskCreatedBy === userId || isAdmin) { %>
+        <a href="/rooms/room/deleteTask?roomTaskId=<%= roomTaskId %>&roomId=<%= roomId %>">x</a>
+        <% } %>
+        <span><%= createdByName %></span>
+        <span style="font-size: 10px; color: red; margin-left: 10px">
+        <%
+      createdAt = new Date(createdAt);
+      const now = new Date();
+      let formatPattern = 'hh:mm';
+      if(
+      createdAt.getFullYear() !== now.getFullYear() ||
+      createdAt.getMonth() !== now.getMonth() ||
+      createdAt.getDate() !== now.getDate()
+      ){
+       formatPattern += ' MM-DD-YYYY';
+      }
+      %>
+      <%= moment(createdAt).format(formatPattern) %>
+    </span>
+    </li>
+    <% }); %>
+</ul>
+</div>

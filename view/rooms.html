@@ -1,0 +1,45 @@
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <form action="/rooms/createRoom" method="post">
+                <input type="text" name="name" >
+                <input type="submit" value="Create room">
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <p>Your rooms</p>
+                <ul class="list-group">
+                    <% rooms.forEach(({name, roomId, createdBy}) => { %>
+                    <li style="list-style: none; font-size: 1.5rem"
+                        class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="/rooms/room?roomId=<%= roomId %>"> <%= name %></a>
+                        <% if(parseInt(createdBy) === userId) { %>
+                         <a href="/rooms/deleteRoom?roomId=<%= roomId %>">x</a>
+                        <% } else { %>
+                        <a href="/rooms/leave?roomId=<%= roomId %>">
+                            <button>Leave the room</button>
+                        </a>
+                        <% } %>
+                    </li>
+                    <% }); %>
+            </ul>
+        </div>
+
+        <div class="col-6">
+            <p>Other Rooms</p>
+            <ul class="list-group">
+                <% otherRooms.forEach(({name, roomId}) => { %>
+                <li style="list-style: none; font-size: 1.5rem"
+                    class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="/rooms/room?roomId=<%= roomId %>"> <%= name %></a>
+                    <a href="/rooms/join?roomId=<%= roomId %>">
+                        <button>join to the room</button>
+                    </a>
+                </li>
+                <% }); %>
+            </ul>
+        </div>
+    </div>
+</div>
