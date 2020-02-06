@@ -1,19 +1,96 @@
-<h1>Main</h1>
-
 <div class="wrap">
-  <ol>
-    <% lists.forEach(list => { %>
-    <li style="list-style: none">
-      <a href="tasks-list?listId=<%= list.listId %>"> <%= list.name %></a>
-      <form action="/delete-list" method="post" style="display: inline-block">
-        <input value="<%= list.listId  %>" name="listId" type="hidden">
-        <input type="submit" value="x">
-      </form>
-    </li>
-    <% }); %>
-  </ol>
-  <form method="post" action="/add-list">
-    <input name="name" required placeholder="list name">
-    <input type="submit" value="add new list">
-  </form>
+    <h1>Main</h1>
+
+    <div class="container p-0">
+        <div class="row m-0">
+            <div class="col-12">
+                <div class="quote-box"
+                     style="border-radius: 5px;padding: 10px 10px; background-color: slategray">
+                    <div class="quote-text" style="text-align: center; height: auto; clear: both; font-weight: 500; font-size: 1.75em;">
+                        <span id="text" style="color: orange"></span>
+                    </div>
+
+                    <div class="quote-author" style="color: orange;text-align: right; height: auto; clear: both; font-size: 1em; padding-top: 20px">
+                        -
+                        <span id="author" ></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" style="margin-top: 2%">
+        <div class="row">
+            <div class="col-12 col-sm-6">
+                <div class="col-12 col-lg-6">
+                    <ol class="list-group">
+                        <% lists.forEach(list => { %>
+                        <li style="list-style: none; font-size: 1.5rem"
+                            class="list-group-item d-flex justify-content-between align-items-center">
+                            <a href="/tasks/tasks-list?listId=<%= list.listId %>"> <%= list.name %></a>
+                            <span class="badge badge-success badge-pill"><%= list.unDone %></span>
+                            <form action="/lists/delete-list" method="post" style="display: inline-block">
+                                <input value="<%= list.listId  %>" name="listId" type="hidden">
+                                <button type="submit" class="btn btn-danger">x</button>
+                            </form>
+                        </li>
+                        <% }); %>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6"
+                 style="display: flex;flex-wrap: wrap;flex-direction: row; align-content: start; justify-content: flex-end;">
+                <form method="post" action="lists/add-list">
+                    <input name="name" required placeholder="list name">
+                    <input type="submit" class="btn btn-primary" value="add new list" style="margin-left: 5px ">
+                </form>
+
+            </div>
+        </div>
+    </div>
 </div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 text-center">
+            <a href="/delete-user?userId=<%= userId %>">
+                <button class="btn btn-danger btn-lg">delete user</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 text-center">
+            <a href="/rooms">
+                <button class="btn btn-dark btn-lg">Rooms</button>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const p = document.querySelector("#show");
+    const id = Math.floor(10 - 0.5 + Math.random() * (10 - 0 + 1));
+    const getQuote = async (id) => {
+        const response = await fetch('http://127.0.0.1:8080/graphql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                query: `{ quote(id: ${id}) { quote, author }  }`
+            })
+        });
+        const data = await response.json();
+        return data.data;
+    };
+
+    getQuote(id).then(data => {
+        document.querySelector("#text").innerHTML = data.quote[0].quote;
+        document.querySelector("#author").innerHTML = data.quote[0].author;
+    })
+</script>

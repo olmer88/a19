@@ -1,3 +1,10 @@
+*{
+    margin: 0;
+}
+html, body{
+    height: 100%;
+}
+
 h1 {
     color: blue;
     display: flex;
@@ -27,4 +34,24 @@ span {
     flex-direction: column;
     display: flex;
     align-items: center;
+    flex-grow: 1;
+}
+
+body {
+
+    display: flex;
+    flex-direction: column;
+}
+.regist {
+flex-basis: min-content;
+}
+.container-reg{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+b {
+    transition: .5s;
 }
