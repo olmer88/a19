@@ -24,6 +24,7 @@ app
     ctx.state.sessionName = ctx.session.name || '';
     const { msg, publicKey } = ctx.query;
     ctx.state.msg = securityManager.isMessageValid(msg, publicKey) ? msg : '';
+    ctx.state.title = 'Please change me!';
     await next();
   })
   .use(routes)

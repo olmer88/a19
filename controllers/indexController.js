@@ -9,16 +9,18 @@ module.exports = {
     ctx.redirect(makeListTasksUrl(ctx.request.query.listId));
   },
   async addList(ctx) {
-    const listId = await listsManager.addList(ctx.request.body.name);
+    const { userId } = ctx.session;
+    const listId = await listsManager.addList(ctx.request.body.name, userId);
     ctx.redirect(makeListTasksUrl(listId));
   },
   async showAllLists(ctx) {
-    if (!ctx.session.userId) {
+    const { userId } = ctx.session;
+    if (!userId) {
       ctx.redirect('/login');
       return;
     }
-    const lists = await listsManager.getAllLists();
-    await ctx.render('index', { lists });
+    const lists = await listsManager.getUserLists(userId);
+    await ctx.render('index', { lists, title: 'All Lists' });
   },
   async deleteTask(ctx) {
     await tasksManager.deleteOne(ctx.request.body.taskId);
@@ -54,6 +56,8 @@ module.exports = {
   async showListTasks(ctx) {
     const list = await listsManager.findOne(ctx.request.query.listId);
     const tasks = await tasksManager.getAllTasksForList(list.listId);
-    await ctx.render('tasksList', { tasks, moment, list });
+    await ctx.render('tasksList', {
+      tasks, moment, list, title: list.name,
+    });
   },
 };

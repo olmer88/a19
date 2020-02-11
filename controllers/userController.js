@@ -9,7 +9,7 @@ module.exports = {
     ctx.redirect('/');
   },
   async loginPage(ctx) {
-    await ctx.render('loginPage', { name: ctx.query.name || '' });
+    await ctx.render('loginPage', { name: ctx.query.name || '', title: 'Login/Register' });
   },
   async login(ctx) {
     const { name, password } = ctx.request.body;

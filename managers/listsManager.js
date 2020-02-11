@@ -3,8 +3,8 @@ const tasksManager = require('./tasksManager');
 
 const TABLE_NAME = 'lists';
 module.exports = {
-  async addList(name) {
-    const [listId] = await knex(TABLE_NAME).insert({ name });
+  async addList(name, userId) {
+    const [listId] = await knex(TABLE_NAME).insert({ userId, name });
     return listId;
   },
   async findOne(listId) {
@@ -23,5 +23,8 @@ module.exports = {
   },
   async getAllLists() {
     return knex(TABLE_NAME).select();
+  },
+  async getUserLists(userId) {
+    return knex(TABLE_NAME).where({ userId }).select();
   },
 };
