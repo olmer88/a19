@@ -7,6 +7,7 @@ module.exports = {
     const [userId] = await knex(TABLE_NAME).insert({ name, password: md5(password) });
     return userId;
   },
+  findAll: () => knex(TABLE_NAME).select(),
   async findOne(name, password) {
     const [user] = await knex(TABLE_NAME).select()
       .where('name', name)

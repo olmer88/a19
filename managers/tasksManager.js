@@ -1,5 +1,5 @@
-const knex = require('../knex');
 const TABLE_NAME = 'tasks';
+const knex = require('../knex');
 
 const checkDone = (taskId, isDone) => knex(TABLE_NAME)
   .where('taskId', taskId)

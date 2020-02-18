@@ -1,5 +1,7 @@
 const moment = require('moment');
 const tasksManager = require('../managers/tasksManager');
+const usersManager = require('../managers/usersManager');
+const shareManager = require('../managers/shareManager');
 const listsManager = require('../managers/listsManager');
 const { makeListTasksUrl } = require('../managers/urlBuilder');
 
@@ -54,10 +56,23 @@ module.exports = {
     }
   },
   async showListTasks(ctx) {
-    const list = await listsManager.findOne(ctx.request.query.listId);
+    const [users, list, userIds] = await Promise.all([
+      usersManager.findAll(),
+      listsManager.findOne(ctx.request.query.listId),
+      shareManager.findUserIdsByListId(ctx.request.query.listId),
+    ]);
     const tasks = await tasksManager.getAllTasksForList(list.listId);
     await ctx.render('tasksList', {
-      tasks, moment, list, title: list.name,
+      tasks,
+      moment,
+      list,
+      title: list.name,
+      users: users.filter(({ userId }) => userId !== ctx.session.userId),
     });
+  },
+  async shareList(ctx) {
+    const { userId, listId } = ctx.request.body;
+    shareManager.addSharedList({ userId, listId });
+    ctx.redirect(`/tasks-list?listId=${listId}`);
   },
 };
