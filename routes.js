@@ -12,6 +12,7 @@ router
   .get('/logout', userController.logout)
   .post('/tasks-list', indexController.addTask)
   .post('/share-list', indexController.shareList)
+  .post('/unshare-list', indexController.unshareList)
   .get('/tasks-list', indexController.showListTasks)
   .post('/add-list', indexController.addList)
   .post('/delete-task', indexController.deleteTask)

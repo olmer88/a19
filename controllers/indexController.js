@@ -1,4 +1,5 @@
 const moment = require('moment');
+const _ = require('lodash');
 const tasksManager = require('../managers/tasksManager');
 const usersManager = require('../managers/usersManager');
 const shareManager = require('../managers/shareManager');
@@ -21,8 +22,12 @@ module.exports = {
       ctx.redirect('/login');
       return;
     }
-    const lists = await listsManager.getUserLists(userId);
-    await ctx.render('index', { lists, title: 'All Lists' });
+    const [lists, listIds] = await Promise.all([
+      listsManager.getUserLists(userId),
+      shareManager.getSharedListIds(userId),
+    ]);
+    const sharedLists = await Promise.all(listIds.map(listsManager.findOne));
+    await ctx.render('index', { lists, sharedLists, title: 'All Lists' });
   },
   async deleteTask(ctx) {
     await tasksManager.deleteOne(ctx.request.body.taskId);
@@ -61,18 +66,31 @@ module.exports = {
       listsManager.findOne(ctx.request.query.listId),
       shareManager.findUserIdsByListId(ctx.request.query.listId),
     ]);
+    const loginedUsedId = ctx.session.userId;
+    if (Number(loginedUsedId) !== list.userId && !userIds.includes(loginedUsedId)) {
+      ctx.redirect('/');
+      return;
+    }
     const tasks = await tasksManager.getAllTasksForList(list.listId);
+    const userIdToUser = _.keyBy(users, 'userId');
     await ctx.render('tasksList', {
       tasks,
       moment,
       list,
       title: list.name,
-      users: users.filter(({ userId }) => userId !== ctx.session.userId),
+      users: users.filter(({ userId }) => userId !== loginedUsedId),
+      userIds,
+      userIdToUser,
     });
   },
   async shareList(ctx) {
     const { userId, listId } = ctx.request.body;
-    shareManager.addSharedList({ userId, listId });
+    await shareManager.addSharedList({ userId, listId });
+    ctx.redirect(`/tasks-list?listId=${listId}`);
+  },
+  async unshareList(ctx) {
+    const { userId, listId } = ctx.request.body;
+    await shareManager.unshareList({ userId, listId });
     ctx.redirect(`/tasks-list?listId=${listId}`);
   },
 };

@@ -1,15 +1,4 @@
 <h1><%= list.name %></h1>
-<form action="/share-list" method="post">
-  <label>Select user:
-    <select name="userId">
-      <% users.forEach(user => { %>
-      <option value="<%= user.userId %>"><%= user.name %></option>
-      <% }) %>
-    </select>
-  </label>
-  <input type="hidden" name="listId" value="<%= list.listId %>">
-  <input type="submit" name="Share" style="margin-left: 10px">
-</form>
 <div class="wrap">
   <form method="post">
     <label>
@@ -65,4 +54,33 @@
   </li>
   <% }); %>
 </ol>
+</div>
+<form action="/share-list" method="post">
+  <fieldset>
+    <label>Share to:
+      <select name="userId">
+        <% users.filter(({userId}) => !userIds.includes(userId)).forEach(user => { %>
+        <option value="<%= user.userId %>"><%= user.name %></option>
+        <% }) %>
+      </select>
+    </label>
+    <input type="hidden" name="listId" value="<%= list.listId %>">
+    <input type="submit" value="Share" style="margin-left: 10px">
+  </fieldset>
+</form>
+<br>
+<div style="border: 1px solid black">
+  Shared to:
+  <ul>
+    <% userIds.forEach((userId) => {%>
+    <li>
+      <%= userIdToUser[userId].name %>
+      <form method="post" action="/unshare-list" style="display: inline">
+        <input type="hidden" name="userId" value="<%= userId %>">
+        <input type="hidden" name="listId" value="<%= list.listId %>">
+        <input type="submit" value="Unshare" >
+      </form>
+    </li>
+    <%}) %>
+  </ul>
 </div>

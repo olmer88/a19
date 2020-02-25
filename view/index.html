@@ -2,7 +2,7 @@
 
 <div class="wrap">
   <ol>
-    <% lists.forEach(list => { %>
+    <% [...sharedLists, ...lists].forEach(list => { %>
     <li style="list-style: none">
       <a href="tasks-list?listId=<%= list.listId %>"> <%= list.name %></a>
       <form action="/delete-list" method="post" style="display: inline-block">
