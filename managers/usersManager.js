@@ -9,9 +9,9 @@ module.exports = {
   },
   findAll: () => knex(TABLE_NAME).select(),
   async findOne(name, password) {
-    const [user] = await knex(TABLE_NAME).select()
-      .where('name', name)
-      .where('password', md5(password));
+    const queryBuilder = knex(TABLE_NAME).select().where('name', name);
+    if (password) queryBuilder.where('password', md5(password));
+    const [user] = await queryBuilder;
     return user;
   },
 };

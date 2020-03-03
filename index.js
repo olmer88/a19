@@ -22,6 +22,7 @@ app
   .use(bodyParser())
   .use(async (ctx, next) => {
     ctx.state.sessionName = ctx.session.name || '';
+    ctx.state.sessionUserId = ctx.session.userId || '';
     const { msg, publicKey } = ctx.query;
     ctx.state.msg = securityManager.isMessageValid(msg, publicKey) ? msg : '';
     ctx.state.title = 'Please change me!';

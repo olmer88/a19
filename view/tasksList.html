@@ -58,11 +58,12 @@
 <form action="/share-list" method="post">
   <fieldset>
     <label>Share to:
-      <select name="userId">
+      <input list="usersList" name="userName">
+      <datalist id="usersList">
         <% users.filter(({userId}) => !userIds.includes(userId)).forEach(user => { %>
-        <option value="<%= user.userId %>"><%= user.name %></option>
+        <option value="<%= user.name %>"></option>
         <% }) %>
-      </select>
+      </datalist>
     </label>
     <input type="hidden" name="listId" value="<%= list.listId %>">
     <input type="submit" value="Share" style="margin-left: 10px">

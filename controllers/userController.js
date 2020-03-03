@@ -1,18 +1,23 @@
 const qs = require('qs');
+const fs = require('fs');
+const asyncBusboy = require('async-busboy');
 const usersManager = require('../managers/usersManager');
 const securityManager = require('../managers/securityManager');
 
 module.exports = {
   async logout(ctx) {
     ctx.session = {};
-    // todo redirect to login page
-    ctx.redirect('/');
+    ctx.redirect('/login');
   },
   async loginPage(ctx) {
     await ctx.render('loginPage', { name: ctx.query.name || '', title: 'Login/Register' });
   },
   async login(ctx) {
     const { name, password } = ctx.request.body;
+    if (!password) {
+      ctx.redirect('/');
+      return;
+    }
     const { userId } = await usersManager.findOne(name, password);
     ctx.session.userId = userId;
     ctx.session.name = name;
@@ -37,5 +42,13 @@ module.exports = {
     ctx.session.name = name;
     ctx.redirect('/');
   },
-
+  async viewProfile(ctx) {
+    await ctx.render('viewProfile', { title: 'Profile' });
+  },
+  async saveAvatar(ctx) {
+    const { userId } = ctx.session;
+    const { files: [file] } = await asyncBusboy(ctx.req);
+    file.pipe(fs.createWriteStream(`public/avatar/avatar-${userId}.jpg`));
+    ctx.redirect('/profile');
+  },
 };

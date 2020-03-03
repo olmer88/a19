@@ -84,9 +84,16 @@ module.exports = {
     });
   },
   async shareList(ctx) {
-    const { userId, listId } = ctx.request.body;
+    const { userName, listId } = ctx.request.body;
+    const user = await usersManager.findOne(userName);
+    const redirectUrl = `/tasks-list?listId=${listId}`;
+    if (!user) {
+      ctx.redirect(redirectUrl);
+      return;
+    }
+    const { userId } = user;
     await shareManager.addSharedList({ userId, listId });
-    ctx.redirect(`/tasks-list?listId=${listId}`);
+    ctx.redirect(redirectUrl);
   },
   async unshareList(ctx) {
     const { userId, listId } = ctx.request.body;
