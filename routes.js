@@ -6,6 +6,7 @@ const router = new Router();
 
 router
   .get('/', indexController.showAllLists)
+  .get('/api/suggest-user-name', userController.suggestUserName)
   .get('/profile', userController.viewProfile)
   .post('/save-avatar', userController.saveAvatar)
   .post('/register', userController.register)

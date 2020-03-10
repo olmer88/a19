@@ -58,7 +58,7 @@
 <form action="/share-list" method="post">
   <fieldset>
     <label>Share to:
-      <input list="usersList" name="userName">
+      <input list="usersList" name="userName" id="userName" oninput="onchangeName()">
       <datalist id="usersList">
         <% users.filter(({userId}) => !userIds.includes(userId)).forEach(user => { %>
         <option value="<%= user.name %>"></option>
@@ -79,9 +79,24 @@
       <form method="post" action="/unshare-list" style="display: inline">
         <input type="hidden" name="userId" value="<%= userId %>">
         <input type="hidden" name="listId" value="<%= list.listId %>">
-        <input type="submit" value="Unshare" >
+        <input type="submit" value="Unshare">
       </form>
     </li>
     <%}) %>
   </ul>
 </div>
+<script>
+  async function onchangeName(event) {
+    console.log(event);
+    const name = document.getElementById('userName').value;
+    const { names } = await fetch(`/api/suggest-user-name?name=${name}`)
+      .then(res => res.json());
+    const userslist = document.getElementById('usersList');
+    userslist.innerHTML = '';
+    names.forEach((name) => {
+    const option = document.createElement('option');
+      option.value = name;
+      userslist.append(option);
+    });
+  }
+</script>

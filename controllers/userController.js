@@ -3,8 +3,14 @@ const fs = require('fs');
 const asyncBusboy = require('async-busboy');
 const usersManager = require('../managers/usersManager');
 const securityManager = require('../managers/securityManager');
+const usersEsManager = require('../managers/usersEsManager');
 
 module.exports = {
+  async suggestUserName(ctx) {
+    const { name } = ctx.query;
+    const names = await usersEsManager.getSuggestedNames(name);
+    ctx.body = { status: 'ok', names };
+  },
   async logout(ctx) {
     ctx.session = {};
     ctx.redirect('/login');
