@@ -49,7 +49,10 @@ module.exports = {
     ctx.redirect('/');
   },
   async viewProfile(ctx) {
-    await ctx.render('viewProfile', { title: 'Profile' });
+    const { userId } = ctx.session;
+    const hash = securityManager.makeTelegaPublicKey(userId);
+    const key = `${userId}|${hash}`;
+    await ctx.render('viewProfile', { title: 'Profile', key });
   },
   async saveAvatar(ctx) {
     const { userId } = ctx.session;

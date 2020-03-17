@@ -6,6 +6,10 @@ const checkDone = (taskId, isDone) => knex(TABLE_NAME)
   .update({ doneAt: isDone ? new Date() : null });
 
 module.exports = {
+  findDeadlined: () => knex(TABLE_NAME).select()
+    .where('deadline', '<', new Date())
+    .where('deadline', '>', new Date())
+  ,
   async findOneById(taskId) {
     const [task] = await knex(TABLE_NAME).select().where('taskId', taskId);
     return task;
@@ -21,8 +25,8 @@ module.exports = {
       .where('taskId', taskId)
       .delete(taskId);
   },
-  check: taskId => checkDone(taskId, true),
-  uncheck: taskId => checkDone(taskId, false),
+  check: (taskId) => checkDone(taskId, true),
+  uncheck: (taskId) => checkDone(taskId, false),
   deleteListTasks(listId) {
     return knex('tasks').select().where('listId', listId).delete();
   },
@@ -32,9 +36,10 @@ module.exports = {
     await knex(TABLE_NAME)
       .where('taskId', targetId)
       .update(
-        { createdAt: targetToChangeData.createdAt, description: targetToChangeData.description });
+        { createdAt: targetToChangeData.createdAt, description: targetToChangeData.description },
+      );
     return knex(TABLE_NAME)
       .where('taskId', targetToChange)
       .update({ createdAt: targetIdData.createdAt, description: targetIdData.description });
-  }
+  },
 };

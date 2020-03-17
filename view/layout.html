@@ -9,7 +9,9 @@
 <header>
   <a href="/" style="list-style: none">Main page</a> |
   <a href="/profile"><%= sessionName %></a>
-  <img src="/avatar/avatar-<%= sessionUserId %>.jpg" height="50px">
+  <% if(sessionUserId) { %>
+    <img src="/avatar/avatar-<%= sessionUserId %>.jpg" height="50px">
+  <% } %>
   <% if(sessionName) { %>
 |    <a href="/logout">Log out</a>
   <% } %>
@@ -17,7 +19,6 @@
 <p style="background-color: lightyellow"><%= msg %></p>
 
 <%- body %>
-
 
 <footer style="margin-top: 100px">@copyright 2019</footer>
 </body>

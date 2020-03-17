@@ -7,6 +7,9 @@ module.exports = {
     const [userId] = await knex(TABLE_NAME).insert({ name, password: md5(password) });
     return userId;
   },
+  saveChatId(userId, chatId) {
+    return knex(TABLE_NAME).update({ chatId }).where({ userId });
+  },
   findAll: () => knex(TABLE_NAME).select(),
   async findOne(name, password) {
     const queryBuilder = knex(TABLE_NAME).select().where('name', name);
@@ -14,4 +17,5 @@ module.exports = {
     const [user] = await queryBuilder;
     return user;
   },
+  findMany: (userIds) => knex(TABLE_NAME).select().where('userId', userIds),
 };

@@ -7,6 +7,7 @@ module.exports = {
     const [listId] = await knex(TABLE_NAME).insert({ userId, name });
     return listId;
   },
+  findMany: (listIds) => knex(TABLE_NAME).where('listId', listIds).select(),
   async findOne(listId) {
     const [list] = await knex(TABLE_NAME).where('listId', listId).select();
     return list;
