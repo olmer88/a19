@@ -1,37 +1,41 @@
-<h1><%= list.name %></h1>
-<div class="wrap">
-  <form method="post">
-    <label>
-      Task:
-      <input type="text" placeholder="write your task here" required name="task">
-      <input type="hidden" name="listId" value="<%= list.listId %>">
-    </label>
-    <input type="submit" value="Add">
-  </form>
-  <ol style="display: flex;flex-direction: column">
-    <% tasks.forEach(task => { %>
-    <li style="display: flex;">
-      <form action="/check-task" method="post" style="display: flex">
-        <input value="<%= task.taskId  %>" name="taskId" type="hidden">
-        <input name="checked" value="true" type="checkbox" <%= task.doneAt ? 'checked' : '' %>
-        onChange="this.form.submit()" >
-      </form>
-      <span class="check" style="<%= task.doneAt ? 'text-decoration: brown line-through' : '' %>">
-      <%=task.description %>
-    </span>
-      <% if(!task.doneAt) {%>
-      <form action="/moveUp" method="post">
-        <input type="hidden" name="targetId" value="<%= task.taskId %>">
+<h2 class="text-center col-8"><%= list.name %></h2>
+
+<div class="row mt-3 mb-3">
+    <form method="post" class="input-group input-group-lg col-8">
         <input type="hidden" name="listId" value="<%= list.listId %>">
-        <input type="submit" value="up">
-      </form>
-      <% }%>
-      <form action="/delete-task" method="post" style="display: flex">
-        <input value="<%= task.taskId  %>" name="taskId" type="hidden">
-        <input value="<%= list.listId  %>" name="listId" type="hidden">
-        <input type="submit" value="x">
-      </form>
-      <span style="font-size: 10px; color: red; margin-left: 10px">
+        <input type="text" placeholder="write your task here" required name="task" class="form-control">
+        <div class="input-group-prepend">
+            <input class="btn btn-secondary" type="submit" value="Add Task">
+        </div>
+    </form>
+</div>
+
+<div class="row mt-4 mb-3">
+    <div class="col-8">
+        <ul class="list-group list-group-flush">
+            <% tasks.forEach(task => { %>
+            <li class="list-group-item-action list-group-item">
+                <form action="/check-task" method="post">
+                    <input value="<%= task.taskId  %>" name="taskId" type="hidden">
+                    <input type="checkbox" name="checked" value="true"
+                    <%= task.doneAt ? 'checked' : '' %> onChange="this.form.submit()">
+                </form>
+                <span class="<%= task.doneAt ? 'done' : '' %> tasks">
+                <%=task.description %>
+            </span>
+                <form action="/delete-task" method="post">
+                    <input value="<%= task.taskId  %>" name="taskId" type="hidden">
+                    <input value="<%= list.listId  %>" name="listId" type="hidden">
+                    <input type="submit" class="btn btn-outline-danger float-right" value="X">
+                </form>
+                <% if(!task.doneAt) {%>
+                <form action="/moveUp" method="post">
+                    <input type="hidden" name="targetId" value="<%= task.taskId %>">
+                    <input type="hidden" name="listId" value="<%= list.listId %>">
+                    <input type="submit" class="btn btn-outline-success float-right mr-2" value="^">
+                </form>
+                <% }%>
+                <span>
 <%
       const createdAt = new Date(task.createdAt);
       const now = new Date();
@@ -46,45 +50,53 @@
       %>
       <%= moment(task.createdAt).format(formatPattern) %>
     </span>
-      <% if(task.doneAt) { %>
-    <span style="font-size: 10px; color: green; margin-left: 10px">
+                <% if(task.doneAt) { %>
+                <span class="float-right mr-2" style="color: darkred">
         <%= moment(task.doneAt).format(formatPattern) %>
     </span>
-      <% } %>
-  </li>
-  <% }); %>
-</ol>
+                <% } %>
+            </li>
+            <% }); %>
+        </ul>
+    </div>
+
+
+    <div class="col-4">
+        <form action="/share-list" method="post">
+            <fieldset>
+                <label class="input-group">Share to:
+                    <input class="form-control" list="usersList" name="userName" id="userName" oninput="onchangeName()">
+                    <input type="hidden" name="listId" value="<%= list.listId %>">
+                    <input type="submit" class="btn btn-dark" value="Share">
+                    <datalist id="usersList">
+                        <% users.filter(({userId}) => !userIds.includes(userId)).forEach(user => { %>
+                        <option value="<%= user.name %>"></option>
+                        <% }) %>
+                    </datalist>
+                </label>
+            </fieldset>
+        </form>
+
+        <br>
+        <div style="border: 3px solid black">
+            Shared to:
+            <ul class="list-group">
+                <% userIds.forEach((userId) => {%>
+                <li class="list-group-item">
+                    <span class="userShared"><%= userIdToUser[userId].name %></span>
+                    <form method="post" action="/unshare-list">
+                        <input type="hidden" name="userId" value="<%= userId %>">
+                        <input type="hidden" name="listId" value="<%= list.listId %>">
+                        <input type="submit" class="btn btn-dark float-right" value="Unshare">
+                    </form>
+                </li>
+                <%}) %>
+            </ul>
+        </div>
+    </div>
+
 </div>
-<form action="/share-list" method="post">
-  <fieldset>
-    <label>Share to:
-      <input list="usersList" name="userName" id="userName" oninput="onchangeName()">
-      <datalist id="usersList">
-        <% users.filter(({userId}) => !userIds.includes(userId)).forEach(user => { %>
-        <option value="<%= user.name %>"></option>
-        <% }) %>
-      </datalist>
-    </label>
-    <input type="hidden" name="listId" value="<%= list.listId %>">
-    <input type="submit" value="Share" style="margin-left: 10px">
-  </fieldset>
-</form>
-<br>
-<div style="border: 1px solid black">
-  Shared to:
-  <ul>
-    <% userIds.forEach((userId) => {%>
-    <li>
-      <%= userIdToUser[userId].name %>
-      <form method="post" action="/unshare-list" style="display: inline">
-        <input type="hidden" name="userId" value="<%= userId %>">
-        <input type="hidden" name="listId" value="<%= list.listId %>">
-        <input type="submit" value="Unshare">
-      </form>
-    </li>
-    <%}) %>
-  </ul>
-</div>
+
 <script>
   async function onchangeName(event) {
     console.log(event);
@@ -94,7 +106,7 @@
     const userslist = document.getElementById('usersList');
     userslist.innerHTML = '';
     names.forEach((name) => {
-    const option = document.createElement('option');
+      const option = document.createElement('option');
       option.value = name;
       userslist.append(option);
     });
